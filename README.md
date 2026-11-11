@@ -23,3 +23,5 @@ Consultas adicionais: P(n), distribuição em gráfico/tabela e, para M/M/1 e M/
 ## Verificação
 
 `node test-engine.cjs` verifica as fórmulas e exemplos da apostila. `node test-solver.cjs` verifica as inferências nos sete modelos, resultados parciais, variabilidade e rejeição de inconsistências.
+
+Validação específica dos exercícios: `node test-exemplos-pdf.cjs`. Resultados, hipóteses de unidades e a divergência do gabarito do slide 50 estão em `VALIDACAO-PDFS.md`. A unidade Mês adota explicitamente 30 dias.
