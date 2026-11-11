@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T17:24:36.975743+00:00",
+  "title": "Design System: Filas Lab",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "oklch(15% 0.01 95)",
+          "oklch(25% 0.01 95)",
+          "oklch(35% 0.01 95)",
+          "oklch(45% 0.01 95)",
+          "oklch(60% 0.01 95)",
+          "oklch(75% 0.01 95)",
+          "oklch(85% 0.01 95)",
+          "oklch(95% 0.01 95)"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(15% 0.05 170)",
+          "oklch(25% 0.05 170)",
+          "oklch(35% 0.05 170)",
+          "oklch(45% 0.05 170)",
+          "oklch(60% 0.05 170)",
+          "oklch(75% 0.05 170)",
+          "oklch(85% 0.05 170)",
+          "oklch(95% 0.05 170)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Accent",
+        "tonalRamp": [
+          "oklch(15% 0.08 155)",
+          "oklch(25% 0.08 155)",
+          "oklch(35% 0.08 155)",
+          "oklch(45% 0.08 155)",
+          "oklch(60% 0.08 155)",
+          "oklch(75% 0.08 155)",
+          "oklch(85% 0.08 155)",
+          "oklch(95% 0.08 155)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "oklch(15% 0.025 150)",
+          "oklch(25% 0.025 150)",
+          "oklch(35% 0.025 150)",
+          "oklch(45% 0.025 150)",
+          "oklch(60% 0.025 150)",
+          "oklch(75% 0.025 150)",
+          "oklch(85% 0.025 150)",
+          "oklch(95% 0.025 150)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "tonalRamp": [
+          "oklch(15% 0.01 140)",
+          "oklch(25% 0.01 140)",
+          "oklch(35% 0.01 140)",
+          "oklch(45% 0.01 140)",
+          "oklch(60% 0.01 140)",
+          "oklch(75% 0.01 140)",
+          "oklch(85% 0.01 140)",
+          "oklch(95% 0.01 140)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(25% 0 0)",
+          "oklch(35% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(60% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(85% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "result": {
+        "role": "neutral",
+        "displayName": "Result",
+        "tonalRamp": [
+          "oklch(15% 0.015 120)",
+          "oklch(25% 0.015 120)",
+          "oklch(35% 0.015 120)",
+          "oklch(45% 0.015 120)",
+          "oklch(60% 0.015 120)",
+          "oklch(75% 0.015 120)",
+          "oklch(85% 0.015 120)",
+          "oklch(95% 0.015 120)"
+        ]
+      },
+      "status": {
+        "role": "neutral",
+        "displayName": "Status",
+        "tonalRamp": [
+          "oklch(15% 0.02 120)",
+          "oklch(25% 0.02 120)",
+          "oklch(35% 0.02 120)",
+          "oklch(45% 0.02 120)",
+          "oklch(60% 0.02 120)",
+          "oklch(75% 0.02 120)",
+          "oklch(85% 0.02 120)",
+          "oklch(95% 0.02 120)"
+        ]
+      },
+      "input-border": {
+        "role": "neutral",
+        "displayName": "Input Border",
+        "tonalRamp": [
+          "oklch(15% 0.02 145)",
+          "oklch(25% 0.02 145)",
+          "oklch(35% 0.02 145)",
+          "oklch(45% 0.02 145)",
+          "oklch(60% 0.02 145)",
+          "oklch(75% 0.02 145)",
+          "oklch(85% 0.02 145)",
+          "oklch(95% 0.02 145)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus",
+        "tonalRamp": [
+          "oklch(15% 0.12 75)",
+          "oklch(25% 0.12 75)",
+          "oklch(35% 0.12 75)",
+          "oklch(45% 0.12 75)",
+          "oklch(60% 0.12 75)",
+          "oklch(75% 0.12 75)",
+          "oklch(85% 0.12 75)",
+          "oklch(95% 0.12 75)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Editorial",
+        "purpose": "Título de abertura."
+      },
+      "body": {
+        "displayName": "Sistema",
+        "purpose": "Controles e leitura de dados."
+      }
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "compact-desktop",
+        "value": "900px"
+      },
+      {
+        "name": "mobile",
+        "value": "700px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "description": "Primary Button conforme interface implementada.",
+      "html": "<button class=\"ds-component-0\">Calcular resultados</button>",
+      "css": ".ds-component-0{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:var(--accent,#22654c);color:#fff;border:0;border-radius:6px;padding:14px 17px;font-weight:600;}.ds-component-0:hover{background:var(--ink,#153d34);}.ds-component-0:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}",
+      "refersTo": "button-primary"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "description": "Secondary Button conforme interface implementada.",
+      "html": "<button class=\"ds-component-1\">Carregar exemplo</button>",
+      "css": ".ds-component-1{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:transparent;border:1px solid var(--line,#d7ddd5);border-radius:6px;padding:9px 14px;}.ds-component-1:hover{background:#e9ede4;}.ds-component-1:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "description": "Text Input conforme interface implementada.",
+      "html": "<input class=\"ds-component-2\" aria-label=\"Taxa de chegada\" value=\"8\">",
+      "css": ".ds-component-2{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#fff;border:1px solid #bbc7bd;border-radius:6px;padding:11px 12px;font-variant-numeric:tabular-nums;}.ds-component-2:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}",
+      "refersTo": "input"
+    },
+    {
+      "name": "Model Navigation",
+      "kind": "nav",
+      "description": "Model Navigation conforme interface implementada.",
+      "html": "<button class=\"ds-component-3\">M/M/1</button>",
+      "css": ".ds-component-3{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:var(--ink,#153d34);color:white;border:1px solid transparent;border-radius:6px;padding:10px 18px;font-weight:600;}.ds-component-3:hover{background:var(--accent,#22654c);}.ds-component-3:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}"
+    },
+    {
+      "name": "Status",
+      "kind": "chip",
+      "description": "Status conforme interface implementada.",
+      "html": "<div class=\"ds-component-4\">Resultado atualizado</div>",
+      "css": ".ds-component-4{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#edf2e8;font-size:11px;padding:5px 9px;border-radius:4px;}.ds-component-4:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}",
+      "refersTo": "status"
+    },
+    {
+      "name": "Result Surface",
+      "kind": "card",
+      "description": "Result Surface conforme interface implementada.",
+      "html": "<div class=\"ds-component-5\">Espera média antes do atendimento</div>",
+      "css": ".ds-component-5{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#eef2e9;padding:24px;border-radius:8px;}.ds-component-5:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Folha de estudo",
+    "overview": "Uma folha de estudo serena: verde escuro sobre papel quente, controles claros e resultados em tabela aberta. A tipografia editorial dá identidade sem competir com a leitura matemática.",
+    "keyCharacteristics": [
+      "Papel quente e verde profundo.",
+      "Hierarquia editorial discreta.",
+      "Resultados abertos, sem excesso de caixas."
+    ],
+    "rules": [],
+    "dos": [
+      "Do manter unidades explícitas junto aos campos e resultados.",
+      "Do usar números tabulares nas medidas.",
+      "Do empilhar configuração e resultados em telas pequenas."
+    ],
+    "donts": [
+      "Don't adicionar sombras às superfícies planas existentes.",
+      "Don't depender de fontes ou imagens externas para a identidade."
+    ]
+  }
+}
