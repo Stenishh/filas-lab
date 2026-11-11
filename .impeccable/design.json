@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-11T17:24:36.975743+00:00",
+  "generatedAt": "2026-11-11T17:42:54.258372+00:00",
   "title": "Design System: Filas Lab",
   "extensions": {
     "colorMeta": {
@@ -160,11 +160,19 @@
     "breakpoints": [
       {
         "name": "compact-desktop",
-        "value": "900px"
+        "value": "1100px"
       },
       {
-        "name": "mobile",
+        "name": "stacked-workspace",
+        "value": "850px"
+      },
+      {
+        "name": "mobile-header",
         "value": "700px"
+      },
+      {
+        "name": "single-column-fields",
+        "value": "480px"
       }
     ]
   },
@@ -185,19 +193,19 @@
       "css": ".ds-component-1{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:transparent;border:1px solid var(--line,#d7ddd5);border-radius:6px;padding:9px 14px;}.ds-component-1:hover{background:#e9ede4;}.ds-component-1:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}"
     },
     {
-      "name": "Text Input",
+      "name": "Value and Unit",
       "kind": "input",
-      "description": "Text Input conforme interface implementada.",
-      "html": "<input class=\"ds-component-2\" aria-label=\"Taxa de chegada\" value=\"8\">",
-      "css": ".ds-component-2{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#fff;border:1px solid #bbc7bd;border-radius:6px;padding:11px 12px;font-variant-numeric:tabular-nums;}.ds-component-2:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}",
+      "description": "Campo livre com unidade de tempo independente.",
+      "html": "<div class=\"ds-value-unit\"><input aria-label=\"Taxa de chegada\" placeholder=\"Não informado\"><select aria-label=\"Unidade da taxa\"><option>Hora</option><option>Minuto</option></select></div>",
+      "css": ".ds-value-unit{display:flex;border:1px solid #bbc7bd;border-radius:6px;overflow:hidden;background:#fff}.ds-value-unit input,.ds-value-unit select{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#fff;border:0;min-width:0}.ds-value-unit input{flex:1;width:0;padding:11px 9px}.ds-value-unit select{width:84px;flex:none;border-left:1px solid var(--line,#d7ddd5);padding:9px 3px;font-size:12px;background:#f8faf5}.ds-value-unit:focus-within{outline:2px solid var(--accent,#22654c);outline-offset:2px}.ds-value-unit input:focus-visible,.ds-value-unit select:focus-visible{outline:3px solid #b27a2a;outline-offset:-3px}",
       "refersTo": "input"
     },
     {
-      "name": "Model Navigation",
+      "name": "Model Choice",
       "kind": "nav",
-      "description": "Model Navigation conforme interface implementada.",
-      "html": "<button class=\"ds-component-3\">M/M/1</button>",
-      "css": ".ds-component-3{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:var(--ink,#153d34);color:white;border:1px solid transparent;border-radius:6px;padding:10px 18px;font-weight:600;}.ds-component-3:hover{background:var(--accent,#22654c);}.ds-component-3:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}"
+      "description": "Linha editorial para abrir a tela do modelo.",
+      "html": "<a class=\"ds-model-choice\" href=\"#/modelo/MM1\"><span>M/M/1</span><small>Um servidor, capacidade e população ilimitadas.</small><span aria-hidden=\"true\">→</span></a>",
+      "css": ".ds-model-choice{display:grid;grid-template-columns:155px 1fr 22px;gap:20px;align-items:center;padding:28px 4px;border-bottom:1px solid var(--line,#d7ddd5);color:var(--ink,#153d34);text-decoration:none;font:25px/1.2 Georgia,serif}.ds-model-choice small{font:13px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--muted,#53665c)}.ds-model-choice:hover{background:#e9ede4}.ds-model-choice:focus-visible{outline:3px solid #b27a2a;outline-offset:3px}@media(max-width:480px){.ds-model-choice{grid-template-columns:105px 1fr 18px;gap:12px;font-size:20px;padding:22px 0}}"
     },
     {
       "name": "Status",
@@ -206,13 +214,6 @@
       "html": "<div class=\"ds-component-4\">Resultado atualizado</div>",
       "css": ".ds-component-4{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#edf2e8;font-size:11px;padding:5px 9px;border-radius:4px;}.ds-component-4:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}",
       "refersTo": "status"
-    },
-    {
-      "name": "Result Surface",
-      "kind": "card",
-      "description": "Result Surface conforme interface implementada.",
-      "html": "<div class=\"ds-component-5\">Espera média antes do atendimento</div>",
-      "css": ".ds-component-5{font:15px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;color:var(--ink,#153d34);background:#eef2e9;padding:24px;border-radius:8px;}.ds-component-5:focus-visible{outline:3px solid var(--focus,#b27a2a);outline-offset:3px}"
     }
   ],
   "narrative": {

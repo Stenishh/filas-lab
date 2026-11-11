@@ -78,11 +78,11 @@ O verde profundo identifica texto e navegação ativa; o verde de destaque orien
 
 ## Typography
 
-Georgia nos títulos editoriais e no número principal; a pilha sans-serif do sistema nos controles, tabelas e explicações. Números usam variantes tabulares. Títulos de seção são compactos; unidades e textos auxiliares permanecem menores. No mobile, o resultado principal usa 32px.
+Georgia nos títulos editoriais e no número principal; a pilha sans-serif do sistema nos controles, tabelas e explicações. Números usam variantes tabulares. Títulos de seção são compactos; unidades e textos auxiliares permanecem menores. O título do modelo usa 40px, reduzido para 34px até 480px. Símbolos dos resultados usam Georgia em 15px; valores da tabela usam 12px.
 
 ## Layout
 
-Contêiner com largura máxima de 1360px e margem interna horizontal de 4,5%. A área de trabalho usa uma coluna de configuração de 370px e outra flexível. Até 900px, a configuração passa a 320px. Até 700px, os painéis se empilham, com preenchimento de 23px. Navegação quebra em linhas. A explicação final usa três colunas, empilhadas no mobile.
+Duas telas: escolha do modelo em linhas editoriais clicáveis, seguida do formulário e dos resultados. Contêiner com largura máxima de 1360px e margem horizontal de 4,5%. A seleção usa duas colunas, com notação, descrição e seta; até 850px vira uma coluna. A área de cálculo divide configuração e resultados na proporção 1,1:1; até 850px os painéis se empilham. Os grupos de campos usam duas colunas, reduzidas a uma até 480px. Resultados ficam fixos durante a rolagem em telas amplas. A explicação final usa três colunas, empilhadas até 700px.
 
 ## Elevation & Depth
 
@@ -94,7 +94,9 @@ Cantos suavemente arredondados em controles, resultado e área de trabalho, conf
 
 ## Components
 
-Botão principal verde, de largura total e rótulo semibold. Botões secundários transparentes com borda. Navegação de modelos usa preenchimento verde profundo no item ativo. Campos trazem unidades visíveis; foco de teclado usa contorno de 3px e afastamento de 3px. A tabela mantém descrição à esquerda e valores à direita. Detalhes expansíveis guardam fórmulas, referências e distribuições. Sem animações de entrada.
+A seleção de modelo usa links largos com notação serifada, descrição discreta e seta. O formulário apresenta campos livres inicialmente vazios; dados adicionais ficam em detalhes expansíveis. Cada controle combina valor e unidade em uma borda comum; taxas, tempos e variâncias possuem seletor próprio. Rótulos mostram nome e símbolo, sem obrigar a escolher uma combinação de entradas.
+
+Botão principal verde, de largura total e rótulo semibold. Botões secundários transparentes com borda. Foco de teclado usa contorno ocre de 3px, com destaque verde no grupo de valor e unidade. A tabela mantém descrição à esquerda e valores à direita, distinguindo dados informados de calculados. O status comunica cálculo parcial, completo ou inconsistência. Os resultados se atualizam após uma pausa de 400ms na digitação, e o botão permite calcular imediatamente. Detalhes guardam inferências, fórmulas, referências e probabilidades. Sem animações de entrada.
 
 ## Do's and Don'ts
 
