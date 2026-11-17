@@ -112,3 +112,7 @@ Botão principal verde, de largura total e rótulo semibold. Botões secundário
 Modo Operate: dados do enunciado → atendimento/variabilidade quando aplicável → ação de calcular → informações adicionais opcionais. Formulário e resultados usam dois painéis separados por espaço, mantendo o papel quente e o verde. Taxas e tempos ficam visíveis; medidas conhecidas, probabilidades e variabilidade alternativa ficam em detalhes expansíveis. As dicas de interpretação de M/G/1 permanecem junto ao seletor, em uma seção expansível.
 
 L, Lq, W e Wq aparecem primeiro em uma grade aberta de duas colunas com unidade explícita e divisórias finas; dados ausentes mostram um travessão e “Aguardando dados”. Taxas, ocupação e demais medidas ficam em uma tabela expansível. Resultados parciais continuam mostrando somente valores disponíveis. Abaixo de 850px, os painéis se empilham; abaixo de 600px, campos usam uma coluna, mantendo os quatro resultados em duas colunas. Espaçamento segue base de 4px, com 8/12/16/24/32/40px; sem sombras ou animações de entrada.
+
+
+### Uniformidade dos resultados
+Todas as medidas numéricas usam a mesma grade aberta de duas colunas: símbolo e descrição, valor em destaque, unidade e contexto. Taxas, ocupação, variabilidade, tempos, indicadores finitos e classes de prioridade seguem o mesmo padrão de L/Lq/W/Wq. Consultas de probabilidade e a distribuição também usam essa apresentação. Os grupos do resultado são visíveis; a distribuição completa permanece expansível. O painel de resultados acompanha a rolagem normal para acomodar todos os grupos.
