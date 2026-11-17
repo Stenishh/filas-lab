@@ -42,3 +42,5 @@ Execute `node test-materiais.cjs` para conferir 56 cenários adicionais das list
 Site: https://stenishh.github.io/filas-lab/
 
 O workflow `.github/workflows/pages.yml` executa as quatro suítes de testes antes de publicar apenas `dist/`. Atualizações na branch `main` são publicadas automaticamente quando os testes passam.
+
+Em M/G/1, o seletor **Tipo de atendimento** permite escolher Exponencial (CV=1 automático), Constante (CV=0 automático) ou Geral/não informado (variabilidade manual). As chegadas já são de Poisson; isso não determina a variabilidade do atendimento. Dados adicionais de variabilidade continuam sendo conferidos para detectar inconsistências.

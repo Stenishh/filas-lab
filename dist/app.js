@@ -29,7 +29,15 @@ function route(){
  $('model-title').textContent=chosen[1];$('description').textContent=chosen[2];document.title=chosen[1]+' — Filas Lab';resetResults();$('model-title').focus({preventScroll:true});window.scrollTo(0,0);run();
 }
 function value(id){const raw=$(id).value.trim();if(raw==='')return undefined;const n=Number(raw.replace(',','.'));if(!Number.isFinite(n))throw Error('Preencha '+($(id).labels?.[0]?.textContent||id)+' com um número válido, usando vírgula ou ponto decimal.');return n;}
+function syncMGService(){
+ if(model!=='MG1')return;
+ const kind=$('mg-service').value;
+ $('cv').readOnly=kind!=='general';
+ if(kind!=='general')$('cv').value=kind==='exponential'?'1':'0';
+ $('mg-service-note').textContent=kind==='exponential'?'Atendimento exponencial: CV = 1 automaticamente, pois o desvio padrão é igual à média.':kind==='constant'?'Atendimento constante: CV = 0 automaticamente, pois não há variação no tempo de atendimento.':'Informe CV, desvio padrão, variância ou segundo momento se o exercício fornecer esses dados.';
+}
 function collect(){
+ syncMGService();
  const outputSeconds=units[$('unit').value],data={};
  function add(key,n,source){if(n===undefined)return;if(data[key]!==undefined&&Math.abs(n-data[key])>1e-7+.005*Math.max(Math.abs(n),Math.abs(data[key])))throw Error('Dados incompatíveis: '+source+' não corresponde a '+QueueSolver.names[key]+'. Confira os valores e as unidades.');if(data[key]===undefined)data[key]=n;}
  for(const el of $('form').querySelectorAll('[data-key]')){const key=el.dataset.key;if(['cv','sd','variance','second'].includes(key)&&model!=='MG1')continue;let n=value(key);if(n===undefined)continue;if(n<0)throw Error('O campo '+fields[key][0]+' não pode ser negativo.');const type=fields[key][2],factor=$(key+'-unit')?units[$(key+'-unit').value]/outputSeconds:1;
@@ -97,6 +105,7 @@ function runPriority(){
 }
 
  $('model-choices').innerHTML=models.map(([key,label,desc])=>`<a class="model-choice" href="#/modelo/${key}"><span class="choice-model">${label}</span><span>${desc}</span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>`).join('');
+ $('mg-service').addEventListener('change',()=>{if(model==='MG1'){$('cv').value='';syncMGService();}});
  $('form').addEventListener('input',schedule);$('form').addEventListener('change',schedule);$('form').addEventListener('submit',e=>{e.preventDefault();clearTimeout(timer);epoch++;run();if(window.innerWidth<=850)$('results-title').scrollIntoView({block:'start'});});$('clear').onclick=clear;
- $('example').onclick=()=>{clear();if(model==='PRIORITY'){$('s').value='1';$('pr-mu').value='20';$('pr-lambda-0').value='2';$('pr-lambda-1').value='10';run();return;}if(model.includes('s'))$('s').value='2';if(/[KN]$/.test(model))$('cap').value='10';$('lambda').value=model.endsWith('N')?'0,2':'3';$('mu').value='4';if(model==='MG1')$('cv').value='1';run();};
+ $('example').onclick=()=>{clear();if(model==='PRIORITY'){$('s').value='1';$('pr-mu').value='20';$('pr-lambda-0').value='2';$('pr-lambda-1').value='10';run();return;}if(model.includes('s'))$('s').value='2';if(/[KN]$/.test(model))$('cap').value='10';$('lambda').value=model.endsWith('N')?'0,2':'3';$('mu').value='4';if(model==='MG1')$('mg-service').value='exponential';run();};
  $('print').onclick=()=>window.print();window.addEventListener('hashchange',route);route();
