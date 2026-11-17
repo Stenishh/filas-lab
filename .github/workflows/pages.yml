@@ -28,6 +28,7 @@ jobs:
           node test-solver.cjs
           node test-exemplos-pdf.cjs
           node test-materiais.cjs
+          node test-prioridades.cjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

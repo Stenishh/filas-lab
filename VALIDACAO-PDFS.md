@@ -97,3 +97,17 @@ Os cenários usam a unidade de cada enunciado (hora, minuto ou dia). Comparaçõ
 - **Indicadores finitos:** disponibilidade individual, clientes em operação, ociosidade por servidor, probabilidade de todos estarem ociosos e taxa de chegadas bloqueadas.
 
 Os cálculos originais dos sete modelos passaram nas novas referências. Os acréscimos atendem perguntas que antes exigiam operações fora da interface. Custos, decisão de dimensionamento e interpretação das ambiguidades são conferidos nos testes e neste relatório; não foi acrescentado um otimizador de custos nem probabilidades temporais para modelos K/N ou M/G/1.
+
+## Verificação específica de prioridades
+
+Suíte independente: `node test-prioridades.cjs`. São **1.768 verificações**, cobrindo **79 cenários válidos e 15 conjuntos de entradas inválidas**. As verificações incluem:
+
+- L, Lq, W e Wq por classe para os exercícios de companhia aérea, servidor rápido/dois lentos, ferramentaria, hospital, produtos com atendimento geral e viaturas.
+- Prioridade sem interrupção e com interrupção/retomada; um, dois e cinco servidores; uma, duas, três, dez e vinte classes no motor (a interface permite de duas a dez).
+- Conservação de L/Lq/W/Wq agregados quando os tempos de serviço têm a mesma distribuição exponencial; lei de Little por classe e conversão entre horas/minutos.
+- Atendimento geral com médias distintas: conservação da espera ponderada pela carga, ΣρkWqk = ρWqFCFS. Com médias diferentes, o número total de clientes não precisa coincidir com o sistema FCFS; a disciplina pode mudar esse número. Com médias iguais, a soma também é comparada ao M/G/1 agregado.
+- Carga próxima da estabilidade (ρ=0,999999), taxas inválidas, classe sem chegadas, número de servidores inválido, sistema sem equilíbrio e combinações de atendimento geral não suportadas.
+
+Os casos já cobertos em `test-materiais.cjs` continuam ativos; a suíte específica passa a ser obrigatória antes da publicação.
+
+Na interface, 16 cenários foram conferidos com Playwright: os exemplos acima, conferência dos valores exibidos por classe, atendimento geral, sobrecarga, entradas negativas/incompletas, limpeza, exemplo, adição/remoção de classes e unidade em dias. Verificação de largura em 320, 390 e 1366px, sem transbordamento ou erros JavaScript. Nenhum ajuste nas fórmulas foi necessário nos casos testados.
