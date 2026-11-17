@@ -44,6 +44,69 @@ function inverse(mode,x,y){
  if(mode==='WWq'){if(x<=y)throw Error('W deve ser maior que Wq.');mu=1/(x-y);lambda=mu-1/x;}
  return {lambda,mu};
 }
+function probability(r,n){
+ if(!Number.isInteger(n)||n<0||n>100000)throw Error('Use um inteiro de 0 a 100.000.');
+ if(!r.probs)throw Error('Este modelo não determina P(n) apenas com média e variância.');
+ if(r.block!==null||r.method.startsWith('População finita'))return r.probs[n]||0;
+ if(n>=r.s)return r.wait*(1-r.rho)*Math.pow(r.rho,n-r.s);
+ let log=Math.log(r.p0);for(let i=1;i<=n;i++)log+=Math.log(r.lambda/(Math.min(i,r.s)*r.mu));
+ return Math.exp(log);
+}
+function countProbability(r,threshold,relation='gt',scope='system'){
+ if(!Number.isInteger(threshold)||threshold<0||threshold>100000)throw Error('Use um limite inteiro de 0 a 100.000.');
+ if(!['gt','ge','lt','le','eq'].includes(relation)||!['system','queue'].includes(scope))throw Error('Selecione uma comparação e uma população válidas.');
+ if(!r.probs)throw Error('Este modelo não determina a distribuição de clientes.');
+ const offset=scope==='queue'?r.s:0;
+ const greater=n=>{
+  if(n<0)return 1;
+  if(r.block!==null||r.method.startsWith('População finita'))return r.probs.slice(n+1).reduce((a,b)=>a+b,0);
+  if(n>=r.s-1)return r.wait*Math.pow(r.rho,n+1-r.s);
+  let sum=0;for(let i=0;i<=n;i++)sum+=probability(r,i);return Math.max(0,1-sum);
+ };
+ const gt=greater(threshold+offset),ge=threshold===0?1:greater(threshold-1+offset);
+ let exact;
+ if(relation==='eq'){
+  const n=threshold+offset;
+  exact=scope==='queue'&&threshold===0?1-gt:r.block!==null||r.method.startsWith('População finita')?(r.probs[n]||0):n>=r.s?r.wait*(1-r.rho)*Math.pow(r.rho,n-r.s):probability(r,n);
+ }
+ const answer={gt,ge,le:1-gt,lt:1-ge,eq:exact}[relation];
+ return Math.max(0,Math.min(1,answer));
+}
+// Potential completions assume continuous service throughout the interval.
+function poisson(rate,interval,n){
+ if(!Number.isFinite(rate)||rate<=0||!Number.isFinite(interval)||interval<0||!Number.isInteger(n)||n<0||n>100000)throw Error('Use taxa positiva, intervalo ≥ 0 e contagem inteira de 0 a 100.000.');
+ const mean=rate*interval;if(!Number.isFinite(mean))throw Error('A média da contagem excede a precisão numérica.');
+ if(mean===0)return n===0?1:0;
+ let log=-mean+n*Math.log(mean);for(let i=2;i<=n;i++)log-=Math.log(i);return Math.exp(log);
+}
+function priorities({classes,mu,s=1,discipline='nonpreemptive'}){
+ if(!Array.isArray(classes)||classes.length<1||classes.length>20)throw Error('Informe de 1 a 20 classes em ordem de prioridade.');
+ if(!['nonpreemptive','preemptive'].includes(discipline))throw Error('Selecione a disciplina de prioridade.');
+ if(!Number.isInteger(s)||s<1||s>1000)throw Error('Informe de 1 a 1.000 servidores.');
+ const general=classes.some(c=>c.mu!==undefined||c.variance!==undefined);
+ if(general&&(s!==1||discipline!=='nonpreemptive'))throw Error('Tempos de atendimento diferentes ou gerais por classe exigem um servidor e prioridade sem interrupção.');
+ const input=classes.map(c=>{
+  const service=c.mu??mu,variance=c.variance??1/service**2;
+  if(!Number.isFinite(c.lambda)||c.lambda<=0||!Number.isFinite(service)||service<=0||!Number.isFinite(variance)||variance<0)throw Error('Informe taxas positivas e variância não negativa em todas as classes.');
+  return {lambda:c.lambda,mu:service,variance};
+ });
+ const lambda=input.reduce((a,c)=>a+c.lambda,0),rho=input.reduce((a,c)=>a+c.lambda/c.mu/s,0);
+ if(rho>=1)throw Error('Sem equilíbrio: a carga total precisa ser menor que a capacidade dos servidores.');
+ let previous=0,previousL=0;
+ const aggregate=general?null:calculate({model:s===1?'MM1':'MMs',lambda,mu,s});
+ const residual=general?input.reduce((a,c)=>a+c.lambda*(c.variance+1/c.mu**2)/2,0):aggregate.wait/(s*mu);
+ const results=input.map((c,i)=>{
+  const cumulative=previous+c.lambda/c.mu/s;let Wq;
+  if(discipline==='preemptive'){
+   const prefix=lambda*(cumulative/rho),total=calculate({model:s===1?'MM1':'MMs',lambda:prefix,mu,s});
+   Wq=(total.L-previousL)/c.lambda-1/mu;previousL=total.L;
+  }else Wq=residual/((1-previous)*(1-cumulative));
+  previous=cumulative;Wq=Math.max(0,Wq);const W=Wq+1/c.mu;
+  return {...c,priority:i+1,rho:c.lambda/c.mu/s,Wq,W,Lq:c.lambda*Wq,L:c.lambda*W};
+ });
+ const L=results.reduce((a,c)=>a+c.L,0),Lq=results.reduce((a,c)=>a+c.Lq,0);
+ return {classes:results,lambda,s,rho,L,Lq,W:L/lambda,Wq:Lq/lambda,busy:rho*s,p0:aggregate?.p0??1-rho,discipline,general};
+}
 function tails(r,t,threshold){
  if(!Number.isFinite(t)||t<0||!Number.isInteger(threshold)||threshold<0)throw Error('Use tempo ≥ 0 e um limite inteiro de clientes ≥ 0.');
  const d=r.s*r.mu-r.lambda, C=r.wait, em=Math.exp(-r.mu*t),ed=Math.exp(-d*t);
@@ -53,5 +116,5 @@ function tails(r,t,threshold){
  else {let sum=r.p0;for(let n=1;n<=threshold;n++){log+=Math.log(r.lambda/(n*r.mu));sum+=Math.exp(log);}tail=1-sum;}
  return {system:Math.max(0,Math.min(1,system)),queue:C*ed,count:Math.max(0,Math.min(1,tail))};
 }
-root.QueueEngine={calculate,inverse,tails};if(typeof module!=='undefined')module.exports=root.QueueEngine;
+root.QueueEngine={calculate,inverse,tails,probability,countProbability,poisson,priorities};if(typeof module!=='undefined')module.exports=root.QueueEngine;
 })(globalThis);

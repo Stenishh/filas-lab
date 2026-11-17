@@ -1,6 +1,6 @@
 # Filas Lab
 
-Calculadora em português para sete modelos de filas. Abra `dist/index.html` no navegador, sem instalar dependências, ou execute `python3 -m http.server 8765 --directory dist` nesta pasta.
+Calculadora em português para sete modelos de filas e disciplinas de prioridade. Abra `dist/index.html` no navegador, sem instalar dependências, ou execute `python3 -m http.server 8765 --directory dist` nesta pasta.
 
 ## Fluxo
 
@@ -25,3 +25,20 @@ Consultas adicionais: P(n), distribuição em gráfico/tabela e, para M/M/1 e M/
 `node test-engine.cjs` verifica as fórmulas e exemplos da apostila. `node test-solver.cjs` verifica as inferências nos sete modelos, resultados parciais, variabilidade e rejeição de inconsistências.
 
 Validação específica dos exercícios: `node test-exemplos-pdf.cjs`. Resultados, hipóteses de unidades e a divergência do gabarito do slide 50 estão em `VALIDACAO-PDFS.md`. A unidade Mês adota explicitamente 30 dias.
+
+
+## Ampliação pelos materiais de referência
+
+Além dos sete modelos originais, **Prioridades** calcula L, Lq, W e Wq por classe, da maior para a menor prioridade. Informe o número de servidores e as taxas de todas as classes; a classe 1 tem preferência. O atendimento exponencial com taxa comum aceita um ou vários servidores, com ou sem interrupção e retomada. Atendimento geral com taxa e variância por classe exige **um servidor, sem interrupção**. Nesse modo, todas as entradas usam a unidade dos resultados; variâncias usam a unidade ao quadrado. O formulário não infere taxas ausentes por classe.
+
+As consultas de quantidade distinguem clientes **no sistema** de clientes **aguardando** e aceitam exatamente, menos de, no máximo, pelo menos e mais de, inclusive nos modelos finitos. Para M/M/1 e M/M/s, há também contagens de Poisson: chegadas ou atendimentos potenciais de um servidor continuamente ocupado. Estes últimos não representam as saídas reais de um servidor que pode ficar ocioso.
+
+Nos modelos N, os resultados mostram clientes em operação, disponibilidade por cliente e ociosidade média por servidor, separada da probabilidade de todos estarem ociosos. Nos modelos K, mostram a taxa de chegadas recusadas e distinguem sistema ocupado de sistema cheio.
+
+Execute `node test-materiais.cjs` para conferir 56 cenários adicionais das listas e apostilas, inferências, prioridades, probabilidades, metas e custos. Os valores de referência em `fixtures/exercicios.json` foram calculados separadamente com aritmética racional exata; podem ser regenerados com `python3 scripts/generate-reference-fixtures.py`, sem dependências externas. Os testes não exigem os PDFs locais. Inconsistências, hipóteses e questões sem dados suficientes estão em `VALIDACAO-PDFS.md`.
+
+## Publicação
+
+Site: https://stenishh.github.io/filas-lab/
+
+O workflow `.github/workflows/pages.yml` executa as quatro suítes de testes antes de publicar apenas `dist/`. Atualizações na branch `main` são publicadas automaticamente quando os testes passam.
