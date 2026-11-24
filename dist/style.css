@@ -14,17 +14,3 @@ details{border-top:1px solid var(--line);margin-top:20px;padding-top:16px;font-s
 /* All numeric outputs share the open two-column measure grid. */
 .result-group-title{font-size:14px;font-weight:600;margin:28px 0 16px}.measure-label{flex-wrap:wrap;min-height:24px;overflow-wrap:anywhere}.measure-label>span{overflow-wrap:anywhere}.main-measure:last-child:nth-child(odd){grid-column:1/-1}.results{position:static}.results [role=status]>.main-measures{margin-top:20px}.distribution-values{max-height:400px;overflow-y:auto;padding-right:8px}.priority-results{margin-top:32px}.priority-results>.result-group-title{padding-top:24px;border-top:1px solid var(--line)}
 @media print{.distribution-values{max-height:none;overflow:visible}}
-
-/* Stronger text and separators for classroom projection. */
-#choose-page{--ink:#102b23;--muted:#243e33;--line:#7b8e81}
-#choose-page .intro h1{font-weight:700}
-#choose-page .intro p{font-size:17px;font-weight:500}
-#choose-page .model-choices{border-top-width:2px}
-#choose-page .model-choice{border-bottom-width:2px}
-#choose-page .choice-model{font-size:28px;font-weight:700}
-#choose-page .model-choice>span:nth-child(2){font-size:16px;font-weight:500;color:var(--muted)}
-#choose-page .model-choice>span:last-child{font-size:24px;font-weight:700}
-#choose-page .model-choice:hover,#choose-page .model-choice:focus-visible{background:#dce8d8;color:#102b23}
-#choose-page .choice-note{font-size:15px;font-weight:500}
-header .header-note,footer span{color:#243e33;font-size:14px;font-weight:500}
-@media(max-width:600px){#choose-page .choice-model{font-size:23px}#choose-page .model-choice>span:nth-child(2){font-size:14px}#choose-page .intro p{font-size:16px}#choose-page .choice-note{font-size:14px}}

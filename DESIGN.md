@@ -116,6 +116,3 @@ L, Lq, W e Wq aparecem primeiro em uma grade aberta de duas colunas com unidade 
 
 ### Uniformidade dos resultados
 Todas as medidas numéricas usam a mesma grade aberta de duas colunas: símbolo e descrição, valor em destaque, unidade e contexto. Taxas, ocupação, variabilidade, tempos, indicadores finitos e classes de prioridade seguem o mesmo padrão de L/Lq/W/Wq. Consultas de probabilidade e a distribuição também usam essa apresentação. Os grupos do resultado são visíveis; a distribuição completa permanece expansível. O painel de resultados acompanha a rolagem normal para acomodar todos os grupos.
-
-### Legibilidade para projeção
-A escolha de modelos usa texto verde mais escuro (#102b23 e #243e33), descrições de 16px, notação em negrito de 28px e divisórias de 2px em #7b8e81. Em telas pequenas, descrições usam 14px e notação 23px. O cabeçalho e rodapé usam apoio de 14px com maior contraste.
