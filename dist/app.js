@@ -88,7 +88,25 @@ function probabilities(r,config){
  function show(){try{$('pn').innerHTML=measures({prob:engine.probability(r,value('query-n'))},[['prob','Exatamente '+value('query-n')+' clientes','P(n)','percent','Clientes no sistema']]);}catch(e){$('pn').textContent=e.message;}};$('query-n').oninput=show;show();
  countQueries(r);
 }
-function tails(r){const box=document.createElement('details');box.innerHTML='<summary>Probabilidades de exceder um limite</summary><label for="threshold">Limite de clientes · r</label><input id="threshold" inputmode="numeric" value="0"><label for="limit">Tempo · '+unitName()+'</label><input id="limit" inputmode="decimal" value="0"><div id="tails" role="status"></div>';$('output').append(box);const show=()=>{try{const v=engine.tails(r,value('limit'),value('threshold'));$('tails').innerHTML=measures(v,[['count','Quantidade acima do limite','P(n > r)','percent'],['system','Tempo no sistema acima do limite','P(W > t)','percent'],['queue','Espera acima do limite','P(Wq > t)','percent']]);}catch(e){$('tails').textContent=e.message;}};$('limit').oninput=show;$('threshold').oninput=show;show();}
+function tails(r){
+ const box=document.createElement('details');
+ box.innerHTML=`<summary>Probabilidades de exceder um limite</summary><label for="threshold">Limite de clientes · r</label><input id="threshold" inputmode="numeric" value="0"><label for="limit">Tempo</label><div class="value-unit"><input id="limit" inputmode="decimal" value="0"><label class="sr" for="limit-unit">Unidade do limite de tempo</label><select id="limit-unit" aria-label="Unidade do limite de tempo">${options($('unit').value)}</select></div><p class="hint">Ao trocar a unidade, o tempo informado é convertido automaticamente.</p><div id="tails" role="status"></div>`;
+ $('output').append(box);
+ let previousUnit=$('limit-unit').value;
+ const show=()=>{try{
+  const duration=value('limit');
+  if(duration===undefined)throw Error('Informe o limite de tempo.');
+  const converted=duration*units[$('limit-unit').value]/units[$('unit').value];
+  const v=engine.tails(r,converted,value('threshold'));
+  $('tails').innerHTML=measures(v,[['count','Quantidade acima do limite','P(n > r)','percent'],['system','Tempo no sistema acima do limite','P(W > t)','percent'],['queue','Espera acima do limite','P(Wq > t)','percent']]);
+ }catch(e){$('tails').textContent=e.message;}};
+ $('limit-unit').onchange=()=>{
+  try{const duration=value('limit');if(duration!==undefined)$('limit').value=Number((duration*units[previousUnit]/units[$('limit-unit').value]).toPrecision(15)).toString().replace('.',',');}
+  catch(e){$('tails').textContent=e.message;}
+  previousUnit=$('limit-unit').value;show();
+ };
+ $('limit').oninput=show;$('threshold').oninput=show;show();
+}
 function schedule(){clearTimeout(timer);last=null;$('output').innerHTML='';$('error').hidden=true;$('status').textContent='Atualizando';$('feedback').textContent='Relacionando os dados preenchidos…';const current=++epoch;timer=setTimeout(()=>{if(epoch===current)run();},400);}
 function clear(){clearTimeout(timer);epoch++;$('form').reset();if(model==='PRIORITY')buildPriorityFields();resetResults();run();}
 function countQueries(r){
