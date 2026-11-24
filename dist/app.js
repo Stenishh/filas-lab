@@ -24,9 +24,9 @@ function buildFields(){
 function route(){
  clearTimeout(timer);epoch++;const key=decodeURIComponent(location.hash.replace(/^#\/?/,''));const chosen=models.find(x=>key==='modelo/'+x[0]);
  $('choose-page').hidden=!!chosen;$('calculator-page').hidden=!chosen;$('example').hidden=!chosen;$('print').hidden=!chosen;
- if(!chosen){model=null;document.title='Filas Lab — Escolha o modelo';return;}
+ if(!chosen){model=null;document.title='Teoria das Filas — Escolha o modelo';return;}
  if(model!==chosen[0]){model=chosen[0];$('form').reset();buildFields();$('s-wrap').hidden=!(model.includes('s')||model==='PRIORITY');$('cap-wrap').hidden=!/[KN]$/.test(model);$('cap-label').textContent=model.endsWith('N')?'População finita · N':'Capacidade total · K';$('source-note').hidden=!model.endsWith('N');$('variability').hidden=model!=='MG1';}
- $('model-title').textContent=chosen[1];$('description').textContent=chosen[2];document.title=chosen[1]+' — Filas Lab';resetResults();$('model-title').focus({preventScroll:true});window.scrollTo(0,0);run();
+ $('model-title').textContent=chosen[1];$('description').textContent=chosen[2];document.title=chosen[1]+' — Teoria das Filas';resetResults();$('model-title').focus({preventScroll:true});window.scrollTo(0,0);run();
 }
 function value(id){const raw=$(id).value.trim();if(raw==='')return undefined;const n=Number(raw.replace(',','.'));if(!Number.isFinite(n))throw Error('Preencha '+($(id).labels?.[0]?.textContent||id)+' com um número válido, usando vírgula ou ponto decimal.');return n;}
 function syncMGService(){

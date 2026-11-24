@@ -1,4 +1,4 @@
-# Filas Lab
+# Teoria das Filas
 
 Calculadora em português para sete modelos de filas e disciplinas de prioridade. Abra `dist/index.html` no navegador, sem instalar dependências, ou execute `python3 -m http.server 8765 --directory dist` nesta pasta.
 

@@ -1,4 +1,4 @@
-# Filas Lab
+# Teoria das Filas
 Calculadora web em português para estudar sete modelos de filas e disciplinas de prioridade: M/M/1, M/M/s, M/M/1/K, M/M/s/K, M/M/1/N, M/M/s/N e M/G/1. Primeiro o usuário escolhe o modelo; depois acessa uma página com campos livres e inicialmente vazios. Preenche apenas os dados que conhece e o motor infere as medidas possíveis automaticamente, sem escolher uma combinação predefinida. Mostra resultados parciais quando não há informações independentes suficientes, valida informações redundantes e não presume dados ausentes. s, K e N são parâmetros estruturais informados quando aplicáveis. Entradas por taxas, tempos ou contagens com unidades independentes. K é capacidade total e N população finita, convenção confirmada pelo usuário. Equivalências com o Formulário M008 Capítulo 7: E(q)=L, E(w)=Lq, E(S)=clientes em atendimento, ρ do formulário=λ/μ. Cálculos locais sem armazenamento remoto de entradas.
 ## Platform
 web

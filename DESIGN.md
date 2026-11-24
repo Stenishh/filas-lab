@@ -1,5 +1,5 @@
 ---
-name: Filas Lab
+name: Teoria das Filas
 description: Calculadora acadêmica de teoria das filas
 colors:
   paper: "#f6f5f0"
@@ -59,7 +59,7 @@ components:
     padding: "5px 9px"
 ---
 
-# Design System: Filas Lab
+# Design System: Teoria das Filas
 
 ## Overview
 
