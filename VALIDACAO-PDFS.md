@@ -111,3 +111,8 @@ Suíte independente: `node test-prioridades.cjs`. São **1.768 verificações**,
 Os casos já cobertos em `test-materiais.cjs` continuam ativos; a suíte específica passa a ser obrigatória antes da publicação.
 
 Na interface, 16 cenários foram conferidos com Playwright: os exemplos acima, conferência dos valores exibidos por classe, atendimento geral, sobrecarga, entradas negativas/incompletas, limpeza, exemplo, adição/remoção de classes e unidade em dias. Verificação de largura em 320, 390 e 1366px, sem transbordamento ou erros JavaScript. Nenhum ajuste nas fórmulas foi necessário nos casos testados.
+
+## Convenção de apresentação com interrupção — 24/11/2026
+Por solicitação do usuário, a interface segue os slides 15–17 nos quadros de prioridades com interrupção: L = λ acumulado × W e Lq = λ acumulado × Wq. A taxa acumulada aparece junto de cada classe. W/Wq e os totais do sistema continuam calculados pelo motor; as contagens exibidas segundo os slides não são somadas para formar os totais. Sem interrupção, a apresentação continua usando λ da classe.
+
+Referência solicitada: s=2, μ=5/h, λ=[0,6;1,4;2]/h. Quadros (W; Wq; L; Lq): classe 1 (0,20072;0,00072;0,12043;0,00043), classe 2 (0,21160;0,01160;0,42319;0,02319), classe 3 (0,26786;0,06786;1,07143;0,27143).
