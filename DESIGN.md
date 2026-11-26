@@ -116,3 +116,6 @@ L, Lq, W e Wq aparecem primeiro em uma grade aberta de duas colunas com unidade 
 
 ### Uniformidade dos resultados
 Todas as medidas numéricas usam a mesma grade aberta de duas colunas: símbolo e descrição, valor em destaque, unidade e contexto. Taxas, ocupação, variabilidade, tempos, indicadores finitos e classes de prioridade seguem o mesmo padrão de L/Lq/W/Wq. Consultas de probabilidade e a distribuição também usam essa apresentação. Os grupos do resultado são visíveis; a distribuição completa permanece expansível. O painel de resultados acompanha a rolagem normal para acomodar todos os grupos.
+
+### Ajuda para localizar perguntas
+Um painel expansível antes da escolha/formulário recebe a pergunta do enunciado. A orientação usa uma lista aberta de títulos, instruções e botões de navegação, com a mesma paleta do projeto. O botão abre os detalhes necessários, conclui cálculos pendentes e leva o foco ao destino; mensagens orientam quando ainda faltam entradas. A ajuda fica oculta na impressão.

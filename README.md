@@ -46,3 +46,6 @@ O workflow `.github/workflows/pages.yml` executa as cinco suítes de testes ante
 Em M/G/1, o seletor **Tipo de atendimento** permite escolher Exponencial (CV=1 automático), Constante (CV=0 automático) ou Geral/não informado (variabilidade manual). As chegadas já são de Poisson; isso não determina a variabilidade do atendimento. Dados adicionais de variabilidade continuam sendo conferidos para detectar inconsistências.
 
 Verificação específica das disciplinas de prioridade: `node test-prioridades.cjs` (1.768 verificações, 79 cenários válidos e 15 entradas inválidas). Essa suíte também é executada antes da publicação no Pages.
+
+## Localizar uma pergunta do enunciado
+Abra **Onde resolvo esta pergunta?**, digite uma pergunta por vez e clique em **Mostrar onde resolver**. A ajuda identifica expressões comuns sobre médias, probabilidades, taxas, ocupação e prioridades, explica onde consultar e oferece **Ir até essa parte**, que abre a seção e move o foco. Não preenche dados nem escolhe hipóteses do modelo. Perguntas não reconhecidas pedem reformulação; consultas indisponíveis no modelo são identificadas. A interpretação é local, baseada em regras em `dist/question-guide.js`, sem envio de texto a serviços externos. Execute `node test-question-guide.cjs` para conferir os encaminhamentos.
