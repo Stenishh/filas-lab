@@ -1,4 +1,4 @@
-/* Local guidance for common queueing questions; no network or automatic data entry. */
+/* Local statement guidance; only explicit user actions apply suggested values. */
 (function(root){
  const normalize=text=>String(text).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
  function locate(text,model){
@@ -60,14 +60,61 @@
   if(!target.matches('input,select,button,a,summary'))target.tabIndex=-1;
   target.scrollIntoView({block:'center',behavior:'auto'});target.focus({preventScroll:true});notice.textContent='';
  }
+ const dataResults=document.getElementById('statement-data-results');
+ const labels={lambda:'Taxa de chegada · λ (lambda)',mu:'Taxa de atendimento por servidor · μ (mi)',s:'Número de servidores · s',rho:'Ocupação média por servidor · ρ',W:'Tempo médio no sistema · W',Wq:'Espera média na fila · Wq',sd:'Desvio padrão · σ',variance:'Variância · σ²','pr-count':'Número de classes','pr-mu':'Taxa de atendimento por servidor · μ (mi)','mg-service':'Tipo de atendimento'};
+ const unitSeconds={hora:3600,minuto:60,segundo:1,dia:86400,mes:2592000};
+ function fieldLabel(c,model){return c.field==='cap'?(model.endsWith('N')?'População · N':'Capacidade total · K'):c.field.startsWith('pr-lambda-')?'Taxa de chegada da classe '+(Number(c.field.split('-').pop())+1)+' · λ':labels[c.field]||c.field;}
+ function applySuggestion(c,model){
+  const el=document.getElementById(c.field);
+  if(!el||el.closest('[hidden]')){notice.textContent='O campo não está disponível neste modo. Em prioridades, confira o número de classes e o tipo de atendimento.';return;}
+  if(c.field==='pr-count'){
+   if(Number(el.value)>=c.value){notice.textContent='O formulário já tem classes suficientes; mantive as entradas.';return;}
+   el.value=String(c.value);el.dispatchEvent(new Event('change',{bubbles:true}));notice.textContent='Número de classes atualizado. Agora confira e preencha cada taxa.';return;
+  }
+  if(c.field==='mg-service'){
+   if(el.value!=='general'&&el.value!==c.value){notice.textContent='Mantive o tipo de atendimento que você já escolheu. Confira a sugestão antes de trocar manualmente.';return;}
+   if(['cv','sd','variance','second'].some(id=>document.getElementById(id)?.value.trim())){notice.textContent='Já há dados de variabilidade preenchidos; mantive esses valores. Confira o tipo de atendimento manualmente.';return;}
+   el.value=c.value;el.dispatchEvent(new Event('change',{bubbles:true}));notice.textContent='Tipo de atendimento atualizado conforme o enunciado.';return;
+  }
+  if(el.value.trim()!==''){notice.textContent='Mantive o valor que você já preencheu em '+fieldLabel(c,model)+'. Para usar a sugestão, confira e limpe esse campo primeiro.';return;}
+  const alternative=c.field==='lambda'?'tmc':c.field==='mu'?'tms':null;
+  if(alternative&&document.getElementById(alternative)?.value.trim()){notice.textContent='Já há um tempo médio preenchido para essa taxa. Mantive os dados; confira a conversão mostrada na sugestão.';return;}
+  let number=c.value;
+  const unitSelect=document.getElementById(c.field+'-unit');
+  if(c.unit&&unitSelect)unitSelect.value=c.unit;
+  else if(c.unit&&c.field.startsWith('pr-'))number*=unitSeconds[document.getElementById('unit').value]/unitSeconds[c.unit];
+  el.value=String(Number(number.toPrecision(14))).replace('.',',');
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  notice.textContent='Preenchido: '+fieldLabel(c,model)+'. Confira o valor e a unidade.';
+ }
+ function renderData(text,model){
+  dataResults.replaceChildren();if(!root.StatementData)return 0;
+  const parsed=root.StatementData.extract(text,model,document.getElementById('unit').value);
+  if(!parsed.suggestions.length)return 0;
+  const heading=document.createElement('h3');heading.textContent='Dados identificados no enunciado';dataResults.append(heading);
+  const list=document.createElement('ul');
+  parsed.suggestions.forEach(c=>{
+   const li=document.createElement('li'),title=document.createElement('strong'),detail=document.createElement('p'),source=document.createElement('p'),button=document.createElement('button');
+   const value=typeof c.value==='string'?(c.value==='constant'?'Constante':'Exponencial'):c.value.toLocaleString('pt-BR',{maximumSignificantDigits:10});
+   title.textContent=fieldLabel(c,model)+': '+value+(c.unit?' '+(['lambda','mu','pr-mu'].includes(c.field)||c.field.startsWith('pr-lambda-')?'por ':'')+c.unit+(c.field==='variance'?'²':''):'')+(c.field==='rho'?'%':'');
+   detail.textContent=c.explanation;source.className='hint';source.textContent='Trecho identificado: “'+c.source+'”.';
+   button.type='button';button.className='quiet';button.textContent='Usar este valor';button.dataset.field=c.field;button.addEventListener('click',()=>applySuggestion(c,model));
+   li.append(title,detail,source,button);list.append(li);
+  });dataResults.append(list);
+  for(const warning of parsed.warnings){const p=document.createElement('p');p.className='hint';p.textContent=warning;dataResults.append(p);}
+  return parsed.suggestions.length;
+ }
  form.addEventListener('submit',event=>{
-  event.preventDefault();results.replaceChildren();notice.textContent='';
+  event.preventDefault();results.replaceChildren();dataResults.replaceChildren();notice.textContent='';
   const text=document.getElementById('question-text').value;
   const match=location.hash.match(/^#\/modelo\/(\w+)$/),model=match?match[1]:null;
   if(!text.trim()){notice.textContent='Digite a pergunta que você quer localizar.';return;}
-  const answers=locate(text,model);
-  if(!answers.length){notice.textContent='Não identifiquei uma medida com segurança. Tente uma pergunta por vez, como “tempo médio na fila”, “probabilidade de mais de 3 clientes” ou “probabilidade de esperar mais de 12 minutos”.';return;}
+  const dataCount=renderData(text,model);
+  const question=text.match(/(?:qual|quais|calcule|determine|pede-se|encontre)[\s\S]*$/i);
+  const answers=locate(question?question[0]:text,model);
+  if(!answers.length&&!dataCount){notice.textContent='Não identifiquei uma medida com segurança. Tente uma pergunta por vez, como “tempo médio na fila”, “probabilidade de mais de 3 clientes” ou “probabilidade de esperar mais de 12 minutos”.';return;}
   answers.forEach(item=>{const entry=document.createElement('li'),title=document.createElement('strong'),description=document.createElement('p'),button=document.createElement('button');title.textContent='Use: '+item.title;description.textContent=item.description;button.type='button';button.className='quiet';button.textContent='Ir até essa parte';button.addEventListener('click',()=>go(item));entry.append(title,description,button);results.append(entry);});
  });
- window.addEventListener('hashchange',()=>{results.replaceChildren();notice.textContent='';});
+ window.addEventListener('hashchange',()=>{results.replaceChildren();dataResults.replaceChildren();notice.textContent='';});
+ document.getElementById('question-text').addEventListener('input',()=>{dataResults.replaceChildren();results.replaceChildren();notice.textContent='';});
 })(globalThis);

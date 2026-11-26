@@ -119,3 +119,6 @@ Todas as medidas numéricas usam a mesma grade aberta de duas colunas: símbolo 
 
 ### Ajuda para localizar perguntas
 Um painel expansível dentro da página do modelo, abaixo do título e antes do formulário, recebe a pergunta do enunciado; ele não aparece na página inicial. A orientação usa uma lista aberta com o nome exato da seção e instruções do campo a preencher, com a mesma paleta do projeto. A resposta mostra seção e campo pelo nome da tela e mantém o botão de navegação, que abre os detalhes necessários e move o foco ao destino sem alterar entradas. A ajuda fica oculta na impressão.
+
+### Dados sugeridos a partir do enunciado
+A ajuda aceita o enunciado completo e separa dados de entrada da orientação sobre o resultado. As sugestões usam linhas abertas com nome do campo, valor/unidade, conversão e trecho identificado, seguidos de “Usar este valor”. O preenchimento é explícito por campo e preserva valores existentes. Ambiguidades são descritas junto das sugestões; perguntas de limite de espera não são tratadas como tempo de serviço.
