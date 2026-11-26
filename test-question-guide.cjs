@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const {locate}=require('./dist/question-guide');
 let checks=0;
 const cases=[
- ['Qual a probabilidade de haver 3 clientes no sistema?','MM1','count-limit','Exatamente (=)'],
+ ['Qual a probabilidade de haver 3 clientes no sistema?','MM1','query-n','Número de clientes no sistema · n'],
  ['Numero medio de maquinas em operacao','MM1N','output','N − L'],
  ['Qual a probabilidade de esperar mais de 12 minutos?','MM1','limit','P(Wq > t)'],
  ['Probabilidade de ficar mais de 12 minutos no sistema','MMs','limit','P(W > t)'],
@@ -11,7 +11,7 @@ const cases=[
  ['No máximo 3 clientes no sistema','MMsK','count-limit','No máximo (≤)'],
  ['Pelo menos 2 aviões aguardando','MMsK','count-limit','Somente aguardando'],
  ['Menos de 6 pessoas no sistema','MM1','count-limit','Menos de (<)'],
- ['Probabilidade de exatamente 3 clientes','MM1','count-limit','Exatamente (=)'],
+ ['Probabilidade de exatamente 3 clientes','MM1','query-n','Número de clientes no sistema · n'],
  ['Tempo médio na fila','MM1','output','Wq'],
  ['Número médio de pacientes no sistema','MMs','output','L'],
  ['Número médio de caminhões na fila','MM1','output','Lq'],

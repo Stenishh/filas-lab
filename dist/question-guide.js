@@ -15,14 +15,15 @@
    if(!['MM1','MMs'].includes(model))add('Probabilidade de tempo','Essa consulta de tempo está disponível em M/M/1 e M/M/s. Escolha um desses modelos somente se ele corresponder ao enunciado. Nos demais modelos, a calculadora não oferece essa distribuição.','model-choices');
    else {
     const upper=/menos|menor|inferior|no maximo|ate\s+\d/.test(q);
-    add(queue||/wq/.test(q)?'Probabilidade de espera na fila — P(Wq > t)':'Probabilidade de tempo no sistema — P(W > t)',`Resultados → Probabilidades de exceder um limite. Em Tempo, informe o limite e escolha Minuto ou Hora. ${queue||/wq/.test(q)?'Leia “Espera acima do limite”.':'Leia “Tempo no sistema acima do limite”, que inclui fila e atendimento.'}${upper?' Para a probabilidade de ficar até esse tempo, use 1 menos a probabilidade de exceder o limite.':''}`,'limit');
+    add('Probabilidades de exceder um limite',`Campo: Tempo. Informe o limite e selecione a unidade (Minuto ou Hora). ${queue||/wq/.test(q)?'Resultado: Espera acima do limite — P(Wq > t).':'Resultado: Tempo no sistema acima do limite — P(W > t), que inclui fila e atendimento.'}${upper?' Para a probabilidade de ficar até esse tempo, use 1 menos a probabilidade de exceder o limite.':''}`,'limit');
    }
   }
   if(count&&(bound||(probability&&/\d/.test(q)))&&!/tempo|minut|hora|segund/.test(q)){
    if(['MG1','PRIORITY'].includes(model))add('Probabilidade de quantidade','A calculadora não oferece distribuição de quantidade neste modelo. Médias e variâncias não bastam para determinar todas essas probabilidades.','results-title');
    else {
     const comparison=/no maximo|ate\s+\d/.test(q)?'No máximo (≤)':/pelo menos|no minimo/.test(q)?'Pelo menos (≥)':/menos|menor|inferior/.test(q)?'Menos de (<)':/mais (?:de|que)|maior|superior|exced/.test(q)?'Mais de (>)':'Exatamente (=)';
-    add('Comparar quantidade de clientes',`Resultados → Comparar quantidade de clientes. Em Onde contar, escolha ${queue?'“Somente aguardando na fila”':'“No sistema (fila e atendimento)”'}. Em Comparação, escolha “${comparison}” e informe o número do enunciado. “Mais de 3” inclui 4, 5…; “no máximo 3” inclui 0, 1, 2 e 3.`,'count-limit');
+    if(comparison==='Exatamente (=)'&&!queue)add('Consultar probabilidade P(n)','Campo: Número de clientes no sistema · n. Informe o número do enunciado. O resultado é a probabilidade de haver exatamente esse número de clientes no sistema.','query-n');
+    else add('Comparar quantidade de clientes',`Resultados → Comparar quantidade de clientes. Em Onde contar, escolha ${queue?'“Somente aguardando na fila”':'“No sistema (fila e atendimento)”'}. Em Comparação, escolha “${comparison}” e informe o número do enunciado. “Mais de 3” inclui 4, 5…; “no máximo 3” inclui 0, 1, 2 e 3.`,'count-limit');
    }
   }
   if(probability&&queue&&!bound&&!/minut|hora|segund/.test(q))add('Probabilidade de esperar ao chegar',model==='PRIORITY'?'A calculadora não oferece a probabilidade de esperar por classe; ela mostra tempos médios.':'Resultados → Taxas, ocupação e outras medidas → Chance de esperar ao entrar. Se a pergunta pede não esperar, use 1 menos essa probabilidade.','output',model==='PRIORITY'?undefined:'Pespera');
@@ -66,7 +67,7 @@
   if(!text.trim()){notice.textContent='Digite a pergunta que você quer localizar.';return;}
   const answers=locate(text,model);
   if(!answers.length){notice.textContent='Não identifiquei uma medida com segurança. Tente uma pergunta por vez, como “tempo médio na fila”, “probabilidade de mais de 3 clientes” ou “probabilidade de esperar mais de 12 minutos”.';return;}
-  answers.forEach(item=>{const entry=document.createElement('li'),title=document.createElement('strong'),description=document.createElement('p'),button=document.createElement('button');title.textContent=item.title;description.textContent=item.description;button.type='button';button.className='quiet';button.textContent='Ir até essa parte';button.addEventListener('click',()=>go(item));entry.append(title,description,button);results.append(entry);});
+  answers.forEach(item=>{const entry=document.createElement('li'),title=document.createElement('strong'),description=document.createElement('p'),button=document.createElement('button');title.textContent='Use: '+item.title;description.textContent=item.description;button.type='button';button.className='quiet';button.textContent='Ir até essa parte';button.addEventListener('click',()=>go(item));entry.append(title,description,button);results.append(entry);});
  });
  window.addEventListener('hashchange',()=>{results.replaceChildren();notice.textContent='';});
 })(globalThis);
