@@ -61,6 +61,7 @@
   target.scrollIntoView({block:'center',behavior:'auto'});target.focus({preventScroll:true});notice.textContent='';
  }
  const dataResults=document.getElementById('statement-data-results');
+ let pendingModelText=null;
  const labels={lambda:'Taxa de chegada · λ (lambda)',mu:'Taxa de atendimento por servidor · μ (mi)',s:'Número de servidores · s',rho:'Ocupação média por servidor · ρ',W:'Tempo médio no sistema · W',Wq:'Espera média na fila · Wq',sd:'Desvio padrão · σ',variance:'Variância · σ²','pr-count':'Número de classes','pr-mu':'Taxa de atendimento por servidor · μ (mi)','mg-service':'Tipo de atendimento'};
  const unitSeconds={hora:3600,minuto:60,segundo:1,dia:86400,mes:2592000};
  function fieldLabel(c,model){return c.field==='cap'?(model.endsWith('N')?'População · N':'Capacidade total · K'):c.field.startsWith('pr-lambda-')?'Taxa de chegada da classe '+(Number(c.field.split('-').pop())+1)+' · λ':labels[c.field]||c.field;}
@@ -87,6 +88,19 @@
   el.dispatchEvent(new Event('input',{bubbles:true}));
   notice.textContent='Preenchido: '+fieldLabel(c,model)+'. Confira o valor e a unidade.';
  }
+ function renderModel(text,model){
+  const box=document.getElementById('statement-model-results');box.replaceChildren();
+  if(!root.StatementData?.recommend)return;
+  const suggestion=root.StatementData.recommend(text,model),heading=document.createElement('h3'),detail=document.createElement('p');
+  heading.textContent=suggestion.matches?'O modelo selecionado corresponde aos indícios do texto':suggestion.models.length?'Confira o modelo de fila':'Faltam hipóteses para indicar um modelo';
+  detail.textContent=[...suggestion.reasons,suggestion.check].filter(Boolean).join(' ');box.append(heading,detail);
+  suggestion.models.forEach(item=>{
+   const p=document.createElement('p'),label=document.createElement('strong');label.textContent=item.name+(item.key===model?' — modelo atual':'');p.append(label);
+   if(item.key!==model){const link=document.createElement('a');link.className='quiet model-suggestion-link';link.href='#/modelo/'+item.key;link.textContent='Abrir '+item.name;
+    link.addEventListener('click',()=>{pendingModelText=document.getElementById('question-text').value;});p.append(document.createTextNode(' '),link);}
+   box.append(p);
+  });
+ }
  function renderData(text,model){
   dataResults.replaceChildren();if(!root.StatementData)return 0;
   const parsed=root.StatementData.extract(text,model,document.getElementById('unit').value);
@@ -105,16 +119,17 @@
   return parsed.suggestions.length;
  }
  form.addEventListener('submit',event=>{
-  event.preventDefault();results.replaceChildren();dataResults.replaceChildren();notice.textContent='';
+  event.preventDefault();results.replaceChildren();dataResults.replaceChildren();document.getElementById('statement-model-results').replaceChildren();notice.textContent='';
   const text=document.getElementById('question-text').value;
   const match=location.hash.match(/^#\/modelo\/(\w+)$/),model=match?match[1]:null;
   if(!text.trim()){notice.textContent='Digite a pergunta que você quer localizar.';return;}
+  renderModel(text,model);
   const dataCount=renderData(text,model);
   const question=text.match(/(?:qual|quais|calcule|determine|pede-se|encontre)[\s\S]*$/i);
   const answers=locate(question?question[0]:text,model);
   if(!answers.length&&!dataCount){notice.textContent='Não identifiquei uma medida com segurança. Tente uma pergunta por vez, como “tempo médio na fila”, “probabilidade de mais de 3 clientes” ou “probabilidade de esperar mais de 12 minutos”.';return;}
   answers.forEach(item=>{const entry=document.createElement('li'),title=document.createElement('strong'),description=document.createElement('p'),button=document.createElement('button');title.textContent='Use: '+item.title;description.textContent=item.description;button.type='button';button.className='quiet';button.textContent='Ir até essa parte';button.addEventListener('click',()=>go(item));entry.append(title,description,button);results.append(entry);});
  });
- window.addEventListener('hashchange',()=>{results.replaceChildren();dataResults.replaceChildren();notice.textContent='';});
- document.getElementById('question-text').addEventListener('input',()=>{dataResults.replaceChildren();results.replaceChildren();notice.textContent='';});
+ window.addEventListener('hashchange',()=>{results.replaceChildren();dataResults.replaceChildren();document.getElementById('statement-model-results').replaceChildren();notice.textContent='';if(pendingModelText!==null){document.getElementById('question-text').value=pendingModelText;pendingModelText=null;document.querySelector('.question-guide').open=true;form.requestSubmit();}});
+ document.getElementById('question-text').addEventListener('input',()=>{dataResults.replaceChildren();results.replaceChildren();document.getElementById('statement-model-results').replaceChildren();notice.textContent='';});
 })(globalThis);

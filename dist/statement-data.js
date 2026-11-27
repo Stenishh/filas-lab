@@ -22,7 +22,7 @@
   const rate=(field,value,u,source,explanation)=>add(field,value*seconds[outputUnit]/seconds[u],outputUnit,explanation||`${format(value)} por ${u} = ${format(value*seconds[outputUnit]/seconds[u])} por ${outputUnit}.`,source);
   const inverse=(field,value,u,source)=>{if(value<=0)return;rate(field,1/value,u,source,`Tempo médio de ${format(value)} ${u}${value===1?'':'s'}: ${field==='lambda'?'λ':'μ'} = 1/tempo = ${format(seconds[outputUnit]/(value*seconds[u]))} por ${outputUnit}.`);};
   // Structural quantities are accepted only with explicit system nouns, never from a probability threshold.
-  matches('('+numeric+')\\s+(?:servidores?|atendentes?|caixas?|barbeiros?|medicos?|tecnicos?|pistas?|terminais?|canais?)(?![a-z])',m=>{if(!/mais|adicion|segund/.test(q.slice(Math.max(0,m.index-20),m.index)))add('s',amount(m[1]),null,`${m[0]} → número de servidores s = ${format(amount(m[1]))}.`,m[0]);});
+  matches('('+numeric+')\\s+(?:servidor(?:es)?|atendentes?|caixas?|barbeiros?|medicos?|tecnicos?|pistas?|terminais?|(?:canal|canais))(?![a-z])',m=>{if(!/\bmais\b|adicion/.test(q.slice(Math.max(0,m.index-20),m.index)))add('s',amount(m[1]),null,`${m[0]} → número de servidores s = ${format(amount(m[1]))}.`,m[0]);});
   matches('(?:\\bs|numero de servidores|numero de canais)\\s*(?:=|:|igual a)\\s*('+numeric+')',m=>add('s',amount(m[1]),null,'Quantidade explícita de servidores.',m[0]));
   if(!model||!model.includes('s')&&model!=='PRIORITY'){
    if(candidates.has('s')&&candidates.get('s').some(c=>c.value!==1))warnings.push('O texto menciona vários servidores. Confira se escolheu um modelo com s.');
@@ -65,7 +65,7 @@
   }
   function matchesOn(sentence,pattern,fn){for(const m of sentence.matchAll(new RegExp(pattern,'g')))fn(m);}
   if(model&&model.endsWith('K')){
-   matches('(?:\\bk|capacidade(?: total)?(?: do sistema)?)\\s*(?:=|:|de|igual a)\\s*('+numeric+')',m=>add('cap',amount(m[1]),null,'K é o total de clientes no sistema, incluindo os que estão em atendimento.',m[0]));
+   matches('(?:\\bk|capacidade(?: total| limitada)?(?: do sistema)?)\\s*(?:=|:|de|igual a)\\s*('+numeric+')',m=>add('cap',amount(m[1]),null,'K é o total de clientes no sistema, incluindo os que estão em atendimento.',m[0]));
    matches('(?:comporta|acomoda|comportar|acomodar)\\s*(?:um maximo de|no maximo|ate)?\\s*('+numeric+')\\s*(?:clientes?|pacientes?|pessoas?|carros?)(?!\\s*(?:na fila|em espera))',m=>{if(!/espera/.test(q.slice(m.index,m.index+m[0].length+20)))add('cap',amount(m[1]),null,'Capacidade total informada no enunciado.',m[0]);});
    const wait=q.match(new RegExp('(?:apenas|maximo de|acomoda|acomodar|comporta|comportar)\\s*('+numeric+')\\s*(?:clientes?|pacientes?|pessoas?|carros?|avioes|caminhoes|ligacoes)\\s*(?:podem (?:permanecer|ficar)\\s*)?(?:em espera|esperando|na fila)'));
    if(wait){const servers=candidates.get('s')||[],distinct=[...new Set(servers.map(x=>x.value))];const s=model==='MM1K'?1:distinct.length===1?distinct[0]:null;if(s)add('cap',amount(wait[1])+s,null,`K = ${format(amount(wait[1]))} posições de espera + ${s} em atendimento = ${format(amount(wait[1])+s)}.`,wait[0]);else warnings.push('O texto informa posições de espera. Para obter K total, some o número de servidores; ainda não identifiquei s com segurança.');}
@@ -105,5 +105,37 @@
   if(model==='MG1'&&!suggestions.some(x=>['mg-service','sd','variance'].includes(x.field)))warnings.push('Em M/G/1, a média de atendimento sozinha não basta: informe a distribuição ou a variabilidade.');
   return {suggestions,warnings:[...new Set(warnings)]};
  }
- root.StatementData={extract};if(typeof module!=='undefined')module.exports={extract};
+ function recommend(text,currentModel){
+  const q=norm(text),names={MM1:'M/M/1',MMs:'M/M/s',MM1K:'M/M/1/K',MMsK:'M/M/s/K',MM1N:'M/M/1/N',MMsN:'M/M/s/N',MG1:'M/G/1',PRIORITY:'Prioridades'};
+  const reply=(models,reasons,check)=>({models:models.map(key=>({key,name:names[key]})),reasons,check,matches:models.length===1&&models[0]===currentModel});
+  if(!q)return reply([],[],'Cole o enunciado completo para conferir as hipóteses.');
+  const structural=extract(text,'MMs').suggestions.find(c=>c.field==='s');
+  let servers=structural?.value;
+  if(!servers&&/unico (?:servidor|atendente|canal|barbeiro|medico|tecnico)|uma unica (?:maquina|pista)|um so (?:servidor|atendente|canal)/.test(q))servers=1;
+  const prior=/prioridade|prioridades|classes de prioridade|casos criticos|interromp.*(?:atendimento|tratamento)|primeira classe.*classe economica/.test(q)&&!/sem prioridades|nao ha prioridades|sem classes de prioridade/.test(q);
+  const source=/(?:\bn|populacao(?: finita)?)\s*(?:=|:|de|igual a)\s*\d/.test(q)||/populacao finita/.test(q)||(/quebr|falha|manutencao|repar|consert/.test(q)&&new RegExp('(?:possui|utiliza|mantem|atende|existem|instalou)\\s*'+numeric+'\\s*(?:maquinas?|robos?|trens|motores?)').test(q));
+  const capacity=/\bk\s*(?:=|:)|capacidade (?:total|limitada)|sistema (?:tem|possui|com) (?:uma )?capacidade|comporta (?:um maximo|no maximo|ate)|(?:apenas|maximo de)\s*(?:\d+|tres|quatro|cinco)[^.;!?]{0,45}(?:em espera|esperando|na fila)|acomodar[^.;!?]{0,40}(?:esperando|na fila)/.test(q)&&!/capacidade (?:ilimitada|infinita)|nao ha limite/.test(q);
+  const poisson=/poisson|(?:tempo|intervalo)[^.;!?]{0,60}(?:entre chegadas|interchegada)[^.;!?]{0,60}exponencial/.test(q);
+  const serviceExp=/(?:atendimento|servico|servir|atender|reparo|conserto|pousar)[^.;!?]{0,100}exponencial/.test(q);
+  const serviceGeneral=/(?:atendimento|servico|servir|atender|reparo|processamento)[^.;!?]{0,100}(?:constante|exatamente|deterministic|distribuicao geral|variancia|desvio padrao)|(?:variancia|desvio padrao)[^.;!?]{0,60}(?:atendimento|servico)/.test(q)&&!serviceExp;
+  const assumptions=poisson&&serviceExp?'':'Confira as hipóteses antes de trocar: chegadas Poisson (ou intervalos exponenciais) e atendimento exponencial. Só a média não identifica a distribuição.';
+  if(prior){
+   if(source||capacity)return reply([],['O texto combina prioridades com capacidade ou população finita.'],'Essa combinação não é oferecida pela calculadora. Não use Prioridades ilimitadas para substituir o modelo finito.');
+   return reply(['PRIORITY'],['O atendimento distingue classes ou interrompe serviços para atender uma prioridade maior.'],'Confira a ordem das classes e se há interrupção. Serviço geral por classe só é oferecido com um servidor, sem interrupção.');
+  }
+  if(source&&capacity)return reply([],['O texto combina população finita N e capacidade limitada K.'],'A calculadora oferece K e N separadamente. A combinação com restrição de capacidade precisa de outro modelo.');
+  if((source||capacity)&&serviceGeneral)return reply([],['Há restrição finita e atendimento não exponencial.'],'Os modelos finitos oferecidos são M/M/…; confira a distribuição de atendimento. Um modelo finito com serviço geral não está disponível.');
+  if(source||capacity){
+   const suffix=source?'N':'K',reasons=[source?'O enunciado descreve fontes finitas que voltam a operar após reparo; N é a população total.':'O enunciado limita a quantidade dentro do sistema ou em espera; K inclui quem está em atendimento.'];
+   if(servers)reasons.push(servers===1?'Há um servidor.':`Há ${servers} servidores em paralelo.`);
+   return reply(servers?[servers===1?'MM1'+suffix:'MMs'+suffix]:['MM1'+suffix,'MMs'+suffix],reasons,(servers?'':'Identifique se existe um ou vários servidores. ')+assumptions);
+  }
+  if(serviceGeneral){
+   if(servers>1)return reply([],['Há vários servidores e atendimento não exponencial.'],'M/G/s não está disponível. M/G/1 atende apenas um servidor; não reduza o número de servidores para encaixar o enunciado.');
+   return reply(['MG1'],['O texto descreve atendimento constante/geral ou fornece variância/desvio padrão.'],(servers===1?'':'Confirme que há apenas um servidor. ')+(poisson?'':'Confirme que as chegadas seguem um processo de Poisson. ')+'Informe a média e a variabilidade do atendimento.');
+  }
+  if(poisson&&serviceExp)return reply(servers?[servers===1?'MM1':'MMs']:['MM1','MMs'],['Há chegadas Poisson e atendimento exponencial.',...(servers?[servers===1?'Há um servidor.':`Há ${servers} servidores em paralelo.`]:[])],(servers?'':'Falta identificar se há um ou vários servidores. ')+'Confirme que capacidade e população são ilimitadas; se houver limites, use a família K ou N.');
+  return reply([],servers?[`Identifiquei ${servers} servidor(es), mas as distribuições não estão claras.`]:[],'Ainda não dá para escolher com segurança. Procure no enunciado: chegadas Poisson, distribuição do atendimento, número de servidores, limite K, população N e prioridades. Não escolha M/M/… apenas por conhecer λ e μ.');
+ }
+ root.StatementData={extract,recommend};if(typeof module!=='undefined')module.exports={extract,recommend};
 })(globalThis);

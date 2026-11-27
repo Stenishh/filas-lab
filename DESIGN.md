@@ -122,3 +122,6 @@ Um painel expansível dentro da página do modelo, abaixo do título e antes do 
 
 ### Dados sugeridos a partir do enunciado
 A ajuda aceita o enunciado completo e separa dados de entrada da orientação sobre o resultado. As sugestões usam linhas abertas com nome do campo, valor/unidade, conversão e trecho identificado, seguidos de “Usar este valor”. O preenchimento é explícito por campo e preserva valores existentes. Ambiguidades são descritas junto das sugestões; perguntas de limite de espera não são tratadas como tempo de serviço.
+
+### Conferência do modelo pelo enunciado
+Antes dos dados identificados, a ajuda apresenta o modelo compatível com os indícios, a justificativa e hipóteses a confirmar. Links “Abrir [modelo]” mantêm o enunciado e refazem a análise no destino. Quando faltam dados ou a combinação não é oferecida, a interface explica a limitação sem trocar de modelo automaticamente.

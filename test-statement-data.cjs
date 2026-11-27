@@ -15,6 +15,7 @@ check('Clientes chegam a uma taxa de 25 por hora. O tempo para atender tem distr
 check('lambda = 3/h; mu = 4/h.','MM1',{lambda:.05,mu:1/15},'minuto');
 check('Chegam 6 clientes a cada 5 minutos. Atendimento médio de 40 segundos.','MM1',{lambda:72,mu:90});
 check('Tempo médio de espera na fila de 15 minutos. Ocupação do sistema de 80%.','MM1',{rho:80,Wq:15});
+check('Capacidade limitada de 5. λ = 4/h; μ = 6/h; s = 2.','MMsK',{lambda:4,mu:6,s:2,cap:5});
 check('Capacidade total de 5. λ = 4/h; μ = 6/h; s = 2.','MMsK',{lambda:4,mu:6,s:2,cap:5});
 check('A fábrica utiliza cinco robôs. Cada robô quebra a cada 30 horas. O tempo de reparo tem média de 3 horas.','MMsN',{lambda:1/30,mu:1/3,cap:5});
 check('Atendimento tem média de 4 minutos. O desvio padrão de 2 minutos.','MG1',{mu:15,sd:2});

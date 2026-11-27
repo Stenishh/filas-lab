@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict'),{recommend}=require('./dist/statement-data');let checks=0;
+function check(text,current,expected){const r=recommend(text,current);assert.deepEqual(r.models.map(x=>x.key),expected,JSON.stringify(r));assert.ok(r.check||r.reasons.length);checks+=2;return r;}
+check('Clientes chegam segundo Poisson. Um servidor. Tempo de atendimento exponencial.','MMs',['MM1']);
+check('Chegadas Poisson. Dois caixas. Atendimento exponencial.','MM1',['MMs']);
+check('Chegadas Poisson. Dois servidores. Atendimento exponencial. Capacidade limitada de 5 clientes.','MM1',['MMsK']);
+check('Chegadas Poisson. Um atendente. Atendimento exponencial. K = 5.','MMs',['MM1K']);
+check('A fábrica possui 10 máquinas que quebram. Dois técnicos fazem reparos.','MM1',['MMsN']);
+check('Uma fábrica possui 5 robôs que quebram. Um técnico faz reparos.','MMs',['MM1N']);
+check('Chegadas de Poisson. Um servidor. Tempo de atendimento constante.','MM1',['MG1']);
+check('Chegadas Poisson. Dois servidores. Tempo de atendimento constante.','MMs',[]);
+check('Classes de prioridade com interrupção e retomada.','MM1',['PRIORITY']);
+check('Prioridades, população finita N = 10.','MM1',[]);
+check('População N = 10 e capacidade limitada K = 4.','MM1',[]);
+check('λ = 3/h; μ = 4/h.','MM1',[]);
+check('Probabilidade de no máximo 3 clientes.','MM1',[]);
+check('Chegadas Poisson e atendimento exponencial.','MM1',['MM1','MMs']);
+check('População finita N = 5.','MM1',['MM1N','MMsN']);
+check('Capacidade limitada e atendimento constante. Um servidor.','MM1',[]);
+check('Chegadas Poisson. Um servidor. Atendimento exponencial, sem prioridades.','PRIORITY',['MM1']);
+check('Uma empresa possui um conjunto numeroso de motores para manutenção.','MM1',[]);
+check('Tempo entre chegadas com desvio padrão informado. Um servidor.','MM1',[]);
+const r=check('Chegadas Poisson. Dois servidores. Atendimento exponencial.','MMs',['MMs']);assert.equal(r.matches,true);checks++;
+const noAssumption=check('Uma fábrica possui 5 robôs que quebram. Um técnico faz reparos.','MM1',['MM1N']);assert.match(noAssumption.check,/hipóteses/);checks++;
+console.log(`${checks} verificações de indicação de modelo passaram.`);
