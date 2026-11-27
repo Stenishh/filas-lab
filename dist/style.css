@@ -20,3 +20,5 @@ details{border-top:1px solid var(--line);margin-top:20px;padding-top:16px;font-s
 #statement-data-results h3{font-size:17px;margin:24px 0 12px}#statement-data-results .hint{overflow-wrap:anywhere}#statement-data-results li strong{overflow-wrap:anywhere}
 
 #statement-model-results h3{font-size:17px;margin:24px 0 12px}#statement-model-results p{max-width:75ch;line-height:1.7}.model-suggestion-link{display:inline-block;text-decoration:none;margin:4px 0 4px 12px;min-height:44px}
+
+.fragment-choice{display:inline-block;margin:4px 8px 4px 0;white-space:normal;text-align:left}

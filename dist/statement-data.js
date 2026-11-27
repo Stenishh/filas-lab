@@ -11,6 +11,14 @@
  function extract(text,model,outputUnit='hora'){
   const q=norm(text),suggestions=[],warnings=[],candidates=new Map();
   outputUnit=seconds[outputUnit]?outputUnit:'hora';
+  const shortText=q.replace(/[.!?]+$/,'').trim();
+  const bareTime=shortText.match(new RegExp('^('+numeric+')\\s*'+unitPattern+'$'));
+  if(bareTime)return {suggestions:[],warnings:[],clarifications:[
+   {label:'É tempo de atendimento',text:'Atendimento de '+bareTime[0]},
+   {label:'É intervalo entre chegadas',text:'Chegadas a cada '+bareTime[0]},
+   {label:'É espera média na fila',text:'Tempo médio de espera na fila de '+bareTime[0]}
+  ]};
+
   const add=(field,value,u,explanation,source)=>{
    if(field==='mg-service'){if(!['constant','exponential'].includes(value))return;}else if(!Number.isFinite(value)||value<0)return;
    if((field==='mu'||field==='lambda'||field.startsWith('pr-lambda-'))&&value===0){warnings.push('As taxas de chegada e atendimento devem ser positivas. Confira os valores do texto.');return;}
@@ -40,6 +48,11 @@
    if(!m[2])warnings.push('Uma taxa de atendimento não informa unidade; a sugestão usa '+outputUnit+'. Confira a unidade do enunciado.');
    rate('mu',amount(m[1]),m[2]?unit(m[2]):outputUnit,m[0]);
   });
+  // A short noun + rate fragment can describe arrivals; make that assumption visible.
+  const shortRate=shortText.match(new RegExp('^(?:no ritmo de |ritmo de |taxa de chegada (?:de |: )?)?('+numeric+')\\s+(?:caminhoes|clientes?|pacientes?|pessoas?|avioes|carros?|chamadas?|tarefas?)\\s*(?:por|/)\\s*'+unitPattern+'$'));
+  if(shortRate&&!finiteSource){rate('lambda',amount(shortRate[1]),unit(shortRate[2]),shortRate[0],'Se este trecho descreve as chegadas, informe λ = '+format(amount(shortRate[1])*seconds[outputUnit]/seconds[unit(shortRate[2])])+' por '+outputUnit+'.');warnings.push('Confirme que essa taxa descreve chegadas. Se for capacidade de atendimento, ela pertence a μ por servidor.');}
+  const shortService=shortText.match(new RegExp('^(?:(?:tempo (?:medio )?de )?atendimento|servico|reparo)\\s*(?:de|:|=|em)?\\s*('+numeric+')\\s*'+unitPattern+'$'));
+  if(shortService)inverse('mu',amount(shortService[1]),unit(shortService[2]),shortService[0]);
   // Process one sentence/clause at a time to keep arrival, service and questions separate.
   const clauses=q.split(/(?<!\d)[.;!?]|[.;!?](?!\d)|\n/).filter(Boolean);
   for(const clause of clauses){
@@ -93,7 +106,7 @@
    let c=unique[0];
    if(model==='PRIORITY'&&field==='lambda'){warnings.push('Em prioridades, informe a taxa de cada classe separadamente (por exemplo, λ1 = 2/h e λ2 = 10/h). A chegada total não preenche uma classe.');continue;}
    if(model==='PRIORITY'&&field==='mu')c={...c,field:'pr-mu'};
-   if(field==='s'&&!model?.includes('s')&&model!=='PRIORITY')continue;
+   if(field==='s'&&!model?.includes('s')&&model!=='PRIORITY'){if(c.value!==1)continue;c={...c,infoOnly:true,explanation:c.explanation+' Neste modelo, um servidor já está definido; não é necessário preencher outro campo.'};}
    suggestions.push(c);
   }
   if(model==='PRIORITY'){

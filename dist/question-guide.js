@@ -31,14 +31,14 @@
   if(/ninguem (?:esta )?(?:esperando|aguardando)|nenhum cliente (?:na fila|esperando)|fila vazia/.test(q))add('Nenhum cliente esperando',['MG1','PRIORITY'].includes(model)?'A consulta de distribuição de quantidade não está disponível neste modelo. Fila vazia não é a mesma coisa que sistema vazio.':'Use Comparar quantidade de clientes → Somente aguardando na fila → Exatamente (=) → 0. Fila vazia pode ter clientes em atendimento; não é a mesma coisa que sistema vazio.', ['MG1','PRIORITY'].includes(model)?'results-title':'count-limit');
   if(/ocupac|ocupado|ociosidade|ocioso/.test(q)&&!/vazio/.test(q))add('Ocupação e ociosidade','Resultados → Taxas, ocupação e outras medidas. “Ocupação média por servidor” é a fração de tempo ocupada; a ociosidade média é 1 menos essa ocupação. “Sistema ocupado” é a chance de pelo menos um servidor estar ocupado.','output',model==='PRIORITY'?'ρ':'λef/(sμ)');
   if(/bloque|recus|rejeit|sinal de ocupado|sistema cheio|lotad/.test(q))add('Bloqueio e chegadas recusadas','Nos modelos com K: Resultados → Taxas, ocupação e outras medidas → Probabilidade de bloqueio. K inclui quem está em atendimento. Para recusas por hora, use a taxa de chegadas recusadas.','output','Pbloqueio');
-  if(!probability&&time&&!/tempo medio (?:entre chegadas|de atendimento)|taxa/.test(q)){
+  if(!probability&&time&&!/tempo medio (?:entre chegadas|de atendimento)|taxa/.test(q)&&!(!queue&&/atendimento|servico|reparo|entre chegadas/.test(q))){
    const key=queue?'Wq':'W';
    add(key==='Wq'?'Espera média na fila — Wq':'Tempo médio no sistema — W',`Resultados → ${key==='Wq'?'Tempo na fila: antes de começar o atendimento.':'Tempo no sistema: fila mais atendimento.'}${model==='PRIORITY'?' Procure o quadro da classe pedida.':''}`,'output',key);
   }
   if(/em operacao|operacionais|disponibilidade/.test(q)&&model&&model.endsWith('N'))add('População e disponibilidade','Resultados → População e disponibilidade. “Em operação” é N − L. “Disponibilidade individual” é (N − L)/N.','output',/disponibilidade/.test(q)?'A':'N − L');
   if(!probability&&count&&/medio|media/.test(q)&&!/em operacao|operacionais|disponibilidade|tempo|taxa|minut|hora|segund/.test(q))add(queue?'Clientes médios na fila — Lq':'Clientes médios no sistema — L',`Resultados → ${queue?'Na fila (Lq)':'No sistema (L)'}.${model==='PRIORITY'?' Veja a classe solicitada; com interrupção, L e Lq seguem a taxa acumulada dos slides.':''}`,'output',queue?'Lq':'L');
   if(/taxa de chegada|lambda|λ|tempo medio entre chegadas/.test(q))add('Taxa de chegada — λ','Preencha Taxa de chegada ou Tempo médio entre chegadas, em Chegadas e atendimento. Escolha a unidade correspondente. Em população finita N, a taxa é por máquina em operação; em prioridades, informe a chegada de cada classe.',model==='PRIORITY'?'pr-lambda-0':'lambda');
-  if(/taxa de atendimento|\bmi\b|\bmu\b|μ|tempo medio de atendimento|tempo de servico/.test(q))add('Taxa de atendimento — μ','Preencha Taxa de atendimento por servidor ou Tempo médio de atendimento. μ é a capacidade de um servidor, não a soma dos canais. Escolha a unidade do enunciado.',model==='PRIORITY'?'pr-service':'mu');
+  if(/taxa de atendimento|\bmi\b|\bmu\b|μ|tempo medio de atendimento|tempo de servico|^(?:atendimento|servico|reparo) (?:de|em|:) /.test(q))add('Taxa de atendimento — μ','Preencha Taxa de atendimento por servidor ou Tempo médio de atendimento. μ é a capacidade de um servidor, não a soma dos canais. Escolha a unidade do enunciado.',model==='PRIORITY'?'pr-service':'mu');
   if(/numero de (?:canais|servidores)|quantos (?:canais|servidores|atendentes)|dois (?:canais|servidores)/.test(q))add('Número de servidores — s','Número de canais é o número de servidores trabalhando em paralelo. Para vários servidores, escolha um modelo com s e preencha Número de servidores.',model&&model.includes('s')||model==='PRIORITY'?'s':'model-choices');
   if(/variancia|desvio padrao|coeficiente de variacao|segundo momento/.test(q))add('Variabilidade do atendimento','Em M/G/1, abra Tipo de atendimento e informe CV, desvio padrão, variância ou segundo momento. Em prioridades com atendimento geral, informe a variância por classe.',model==='PRIORITY'?'pr-service':model==='MG1'?'mg-service':'model-choices');
   if(/prioridade|interrupcao|preempt/.test(q))add('Disciplina de prioridade','Escolha Prioridades. Em Disciplina de prioridade, selecione sem interrupção ou com interrupção e retomada conforme o enunciado. A classe 1 tem a maior prioridade.',model==='PRIORITY'?'pr-discipline':'model-choices');
@@ -104,6 +104,11 @@
  function renderData(text,model){
   dataResults.replaceChildren();if(!root.StatementData)return 0;
   const parsed=root.StatementData.extract(text,model,document.getElementById('unit').value);
+  if(parsed.clarifications?.length){
+   const heading=document.createElement('h3'),p=document.createElement('p');heading.textContent='O que esse tempo representa?';p.textContent='Um tempo sozinho pode ser chegada, atendimento ou espera. Escolha o significado do trecho para indicar o campo correto.';dataResults.append(heading,p);
+   for(const item of parsed.clarifications){const button=document.createElement('button');button.type='button';button.className='quiet fragment-choice';button.textContent=item.label;button.addEventListener('click',()=>{document.getElementById('question-text').value=item.text;form.requestSubmit();});dataResults.append(button);}
+   return parsed.clarifications.length;
+  }
   if(!parsed.suggestions.length)return 0;
   const heading=document.createElement('h3');heading.textContent='Dados identificados no enunciado';dataResults.append(heading);
   const list=document.createElement('ul');
@@ -113,7 +118,7 @@
    title.textContent=fieldLabel(c,model)+': '+value+(c.unit?' '+(['lambda','mu','pr-mu'].includes(c.field)||c.field.startsWith('pr-lambda-')?'por ':'')+c.unit+(c.field==='variance'?'²':''):'')+(c.field==='rho'?'%':'');
    detail.textContent=c.explanation;source.className='hint';source.textContent='Trecho identificado: “'+c.source+'”.';
    button.type='button';button.className='quiet';button.textContent='Usar este valor';button.dataset.field=c.field;button.addEventListener('click',()=>applySuggestion(c,model));
-   li.append(title,detail,source,button);list.append(li);
+   li.append(title,detail,source);if(!c.infoOnly)li.append(button);list.append(li);
   });dataResults.append(list);
   for(const warning of parsed.warnings){const p=document.createElement('p');p.className='hint';p.textContent=warning;dataResults.append(p);}
   return parsed.suggestions.length;

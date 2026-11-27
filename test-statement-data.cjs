@@ -5,6 +5,12 @@ function check(text,model,expected,unit='hora'){
  for(const [field,n] of Object.entries(expected)){const c=r.suggestions.find(c=>c.field===field);assert.ok(c,`${field} ausente: ${JSON.stringify(r)}`);checks++;if(typeof n==='number')near(c.value,n);else{assert.equal(c.value,n);checks++;}}
  return r;
 }
+check('3 caminhões por hora','MM1',{lambda:3});
+check('um canal','MM1',{s:1});
+check('atendimento de 15 minutos','MM1',{mu:4});
+check('tempo de atendimento de 15 minutos','MM1',{mu:4});
+check('Chegadas a cada 20 minutos','MM1',{lambda:3});
+check('Caminhões chegam num armazém para descarga segundo uma distribuição de Poisson no ritmo de 3 caminhões por hora. Existe apenas um canal para descarga. O tempo de atendimento é em média 15 minutos. Calcular:','MM1',{lambda:3,mu:4,s:1});
 check('Clientes chegam a uma barbearia com tempo médio entre chegadas de 20 minutos. O barbeiro gasta em média 15 minutos com cada cliente.','MM1',{lambda:3,mu:4});
 check('Caminhões chegam a uma taxa de 3 caminhões por hora. O tempo de atendimento é exponencial com média de 15 minutos.','MM1',{lambda:3,mu:4});
 check('Aviões chegam a cada 4 minutos. Há duas pistas. Apenas 3 aviões podem permanecer em espera. O tempo para pousar tem média de 3 minutos.','MMsK',{lambda:15,mu:20,s:2,cap:5});
@@ -27,4 +33,5 @@ r=extract('Chegadas de Poisson com taxa de 3 por hora. Atendimento médio de 15 
 r=extract('Qual a probabilidade de no máximo 3 clientes no sistema?','MMsK');assert.ok(!r.suggestions.some(c=>c.field==='cap'));checks++;
 r=extract('O tempo entre chegadas é exponencial com média de 5 minutos. Tempo de atendimento médio de 4 minutos.','MG1');assert.ok(!r.suggestions.some(c=>c.field==='mg-service'));checks++;
 assert.deepEqual(extract('','MM1').suggestions,[]);checks++;
+const fragment=extract('15 minutos','MM1');assert.equal(fragment.suggestions.length,0);assert.equal(fragment.clarifications.length,3);assert.ok(fragment.clarifications.some(c=>c.text==='Atendimento de 15 minutos'));checks+=3;
 console.log(`${checks} verificações da leitura de enunciados passaram.`);

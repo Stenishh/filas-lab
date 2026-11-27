@@ -29,4 +29,5 @@ const cases=[
 ];
 for(const [q,model,target,content] of cases){const found=locate(q,model);assert.ok(found.some(x=>x.target===target&&(x.title+' '+x.description).includes(content)),JSON.stringify({q,found}));checks++;}
 for(const q of ['', '  ','Qual é o significado da vida?','<script>alert(1)</script>']){assert.deepEqual(locate(q,'MM1'),[]);checks++;}
+assert.ok(!locate('atendimento de 15 minutos','MM1').some(c=>c.symbol==='W'));checks++;
 console.log(`${checks} perguntas e casos de orientação conferidos.`);

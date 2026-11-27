@@ -125,3 +125,6 @@ A ajuda aceita o enunciado completo e separa dados de entrada da orientação so
 
 ### Conferência do modelo pelo enunciado
 Antes dos dados identificados, a ajuda apresenta o modelo compatível com os indícios, a justificativa e hipóteses a confirmar. Links “Abrir [modelo]” mantêm o enunciado e refazem a análise no destino. Quando faltam dados ou a combinação não é oferecida, a interface explica a limitação sem trocar de modelo automaticamente.
+
+### Trechos curtos do enunciado
+A ajuda aceita trechos individuais e usa o exercício dos caminhões como exemplo na interface. Para um tempo isolado, mostra três escolhas de significado antes de sugerir um campo. Dados fixos pelo modelo, como um servidor em M/M/1, aparecem como informação sem botão para um campo indisponível.
